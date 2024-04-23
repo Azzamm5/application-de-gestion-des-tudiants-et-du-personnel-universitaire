@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Afficher l'aide
+help() {
+    echo "******* SCRIPT AZZAM *******"
+    echo "Erreur: $1"
+    echo "Utilisation: $0 -h <URL> [-d <RÉPERTOIRE>]"
+    echo "Options:"
+    echo "  -h <URL>        URL du site web à télécharger"
+    echo "  -d <RÉPERTOIRE> Répertoire où enregistrer le contenu téléchargé (par défaut: ./azzam)"
+    echo "  -help           Afficher cette aide"
+    exit 1
+}
+
+# Définir les valeurs par défaut dans le directory AZZAM
+directory="./azzam"
+
+# Analyser les options  
+while getopts ":h:d:" opt; do
+    case $opt in
+        h) url="$OPTARG" ;;
+        d) directory="$OPTARG" ;;
+        :) help "Option -$OPTARG nécessite un argument." ;;
+        \?) help "Option invalide: -$OPTARG" ;;
+    esac
+done
+
+# Vérifier l'URL
+if [ -z "$url" ]; then
+    help "URL requise."
+fi
+
+# Créer le répertoire de destination s'il n'existe pas
+mkdir -p "$directory"
+
+# Télécharger le contenu
+wget --mirror --convert-links --page-requisites --no-parent --directory-prefix="$directory" --user-agent="Mozilla/5.0" "$url"
