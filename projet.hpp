@@ -133,14 +133,17 @@ class cours {
         string nom_cours;
         int code_cours;
         string departement;
+        string niveau_etude;
         Enseignant* Enseignant_associe;
     public:
-        cours(string n, int code, string dep, Enseignant* enseignant);
+        cours(string n, int code, string dep,string niveau, Enseignant* enseignant);
         string getNom_cours();
         void setNom_cours(string s);
         void setDepartement(string d);
         int getCode_cours();
         string getDepartement();
+        string getNiveau_etude();
+        void setNiveau_etude(string niv);
         void affichecours() const;
 
 };
@@ -157,7 +160,8 @@ class gestion_cours{
         void ajouter_cours(const cours& c);
         void supprimerCours(const int code_cours);
         void afficherTousCours() const;
-        void modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement);
+        void modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement,const string& niv_etude);
+        void consulter_cours(const string& departement, const string& niveau) ;
 
 };
 //**********************************************|**********************************************|************
