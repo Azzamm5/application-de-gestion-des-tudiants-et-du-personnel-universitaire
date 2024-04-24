@@ -117,11 +117,50 @@ class Gestion_personnel{
     public:
         void ajouterPersonnel(const Personnel& p);
         void afficherTousLesPersonnel() const;
+        void ajouterEnseigant(const Enseignant& e);
+        void ajouterAdministratif(const Administratif& a);
 };
 //**********************************************|**********************************************|************
 
 
 
+
+
+//************************************| Class Gours |*******************************************************
+
+class cours {
+    private:
+        string nom_cours;
+        int code_cours;
+        string departement;
+        Enseignant* Enseignant_associe;
+    public:
+        cours(string n, int code, string dep, Enseignant* enseignant);
+        string getNom_cours();
+        void setNom_cours(string s);
+        void setDepartement(string d);
+        int getCode_cours();
+        string getDepartement();
+        void affichecours() const;
+
+};
+//**********************************************|**********************************************|************
+
+
+
+//************************************| Class Gestion Cours |*******************************************************
+
+class gestion_cours{
+    private:
+        vector<cours>liste_cours;
+    public:
+        void ajouter_cours(const cours& c);
+        void supprimerCours(const int code_cours);
+        void afficherTousCours() const;
+        void modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement);
+
+};
+//**********************************************|**********************************************|************
 
 
 
