@@ -188,6 +188,83 @@ void Gestion_personnel::afficherTousLesPersonnel() const {
         personnel.afficherDetailPerso();
    }
 }
+
+void Gestion_personnel::ajouterEnseigant(const Enseignant& e){
+    listePersonnel.push_back(e);
+}
+
+
+void Gestion_personnel::ajouterAdministratif(const Administratif& a){
+     listePersonnel.push_back(a);
+}
  //##########################################################################################################################################
 
 
+
+
+
+
+
+//########################################## Class Cours ##############################################
+
+cours::cours(string n, int code, string dep, Enseignant* enseignant) {
+    nom_cours = n;
+    code_cours = code;
+    departement = dep;
+    Enseignant_associe = enseignant;
+}
+string cours::getNom_cours(){return nom_cours;}
+int cours::getCode_cours(){return code_cours;}
+void cours::setNom_cours(string s){nom_cours = s;}
+string cours::getDepartement(){ return departement;}
+void cours::setDepartement(string d){departement = d;}
+void cours::affichecours() const{
+    cout << "************* Cours Universitaite *************" << endl;
+    cout << "Nom du cours: " << nom_cours << endl;
+    cout << "Code du cours: " << code_cours << endl;
+    cout << "Département: " << departement << endl;
+    if (Enseignant_associe != nullptr) {
+        cout << "Enseignant associé: " << Enseignant_associe->getNom() << endl;
+    } else {
+        cout << "Aucun enseignant associé." << endl;
+    }
+}
+
+//##########################################################################################################################################
+
+
+
+
+
+//########################################## Class Gestion cours ##############################################
+void gestion_cours::ajouter_cours(const cours& c){
+    liste_cours.push_back(c);
+}
+void gestion_cours::supprimerCours(const int code_cours) {
+    for (auto i = liste_cours.begin(); i != liste_cours.end(); i++) {
+        if (i->getCode_cours() == code_cours) {
+            liste_cours.erase(i);
+            cout << "Cours Dont le code  -> | " <<code_cours << " | est supprimé avec succès !" << endl;                
+            return;
+        }
+    }
+     cout << " le code " << code_cours << " non trouvé." << endl;
+}
+
+void gestion_cours::afficherTousCours() const {
+    for (const auto& cours : liste_cours) {
+        cours.affichecours();
+     }
+}
+
+
+void gestion_cours::modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement) {
+    for (auto& cours : liste_cours) {
+        if (cours.getCode_cours() == code_cours) {
+            cours.setNom_cours(nouveau_nom);
+            cours.setDepartement(nouveau_departement);
+            break;
+        }
+    }
+}
+//##########################################################################################################################################
