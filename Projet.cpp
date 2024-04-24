@@ -207,10 +207,11 @@ void Gestion_personnel::ajouterAdministratif(const Administratif& a){
 
 //########################################## Class Cours ##############################################
 
-cours::cours(string n, int code, string dep, Enseignant* enseignant) {
+cours::cours(string n, int code, string dep,string niveau, Enseignant* enseignant) {
     nom_cours = n;
     code_cours = code;
     departement = dep;
+    niveau_etude = niveau;
     Enseignant_associe = enseignant;
 }
 string cours::getNom_cours(){return nom_cours;}
@@ -218,11 +219,14 @@ int cours::getCode_cours(){return code_cours;}
 void cours::setNom_cours(string s){nom_cours = s;}
 string cours::getDepartement(){ return departement;}
 void cours::setDepartement(string d){departement = d;}
+string cours::getNiveau_etude(){return niveau_etude;}
+void cours::setNiveau_etude(string niv){niveau_etude = niv;}
 void cours::affichecours() const{
     cout << "************* Cours Universitaite *************" << endl;
     cout << "Nom du cours: " << nom_cours << endl;
     cout << "Code du cours: " << code_cours << endl;
     cout << "Département: " << departement << endl;
+    cout << "Niveau D'etude : " << niveau_etude << endl;
     if (Enseignant_associe != nullptr) {
         cout << "Enseignant associé: " << Enseignant_associe->getNom() << endl;
     } else {
@@ -258,13 +262,28 @@ void gestion_cours::afficherTousCours() const {
 }
 
 
-void gestion_cours::modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement) {
+void gestion_cours::modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement,const string& niv_etude) {
     for (auto& cours : liste_cours) {
         if (cours.getCode_cours() == code_cours) {
             cours.setNom_cours(nouveau_nom);
             cours.setDepartement(nouveau_departement);
+            cours.setNiveau_etude(niv_etude);
             break;
         }
+    }
+}
+
+void gestion_cours::consulter_cours(const string& departement, const string& niveau) {
+    bool exist = false;
+    for ( auto& cours : liste_cours) {
+        if (cours.getDepartement() == departement || cours.getNiveau_etude() == niveau) {
+            cout << "[ Résultat de la Recherche du Cours ]" << endl;
+            cours.affichecours(); 
+            exist = true;
+        }
+    }
+    if (!exist) {
+        cout << "!!!!! [ Cours Inexistant ] !!!!!" << endl;
     }
 }
 //##########################################################################################################################################
