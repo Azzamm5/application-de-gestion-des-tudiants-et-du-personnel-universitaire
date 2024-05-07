@@ -1,238 +1,418 @@
 #include <iostream>
-#include "projet.hpp"
+#include "uni.hpp"
 #include <vector>
 #include <string>
-
+#include<iomanip>
 using namespace std;
 
 //############################################### Class Etudiant ##############################################
-
-//---| Constructeur Parametrer | ---------------------------------
-etudiant::etudiant(string na, string pre, string mat, string fill) 
-: name(na), prenom(pre), matricule(mat), filliere(fill) {};
-
-
-//---| Methode Affiche | -----------------------------------------
-void etudiant::affichEtudiant() const {
-    cout << "*********** | Etudiant | ***********" << endl;
-    cout << "* Name : " << name << endl;
-    cout << "* Prenom : " << prenom << endl;
-    cout << "* Matricule  : " << matricule << endl;
-    cout << "* Filliere : " << filliere << endl;
-    cout << "************************************" << endl;
+//---| Constructeur Parametrer | --------------------------------
+Etudiant::Etudiant(string mat,string nom,string prenom,string niveau,string filiere,string site):
+Mat(mat),Nom(nom),Prenom(prenom),Niveau(niveau),Filiere(filiere),Site(site){
+        coursinscrits = "Aucune Cours Inscrit";
+        status = "";
+       
 }
 
 
 //---| Methode Getters | -----------------------------------------
-string etudiant::getMatricule()const  {  return matricule;   }
-string etudiant::getName()const { return name; }
-string etudiant::getFilliere() const {return filliere;}
-string etudiant::getPrenom() const { return prenom; }
-    
-//---| Modification d'etudiant | -----------------------------------------
 
-void etudiant::modifierEtudiant(string na, string pre, string mat, string fill) {
-    name = na;
-    prenom = pre;
-    matricule = mat;
-    filliere = fill;
+string Etudiant::getMat(){return Mat;}
+
+string Etudiant::getNom(){return Nom;} 
+
+string Etudiant::getPrenom(){return Prenom;}
+
+string Etudiant::getNiveau(){return Niveau;}
+
+string Etudiant::getFiliere(){return Filiere;}
+
+string Etudiant::getSite(){return Site;}
+
+string Etudiant::getCoursinscrits(){return coursinscrits;}
+
+void Etudiant::setCoursinscrits(string C){coursinscrits = C;}
+
+void Etudiant::setFiliere(string filiere){Filiere = filiere;}
+void Etudiant::setSite(string site){Site = site;}
+void Etudiant::setMat(string mat){Mat = mat;}
+
+string Etudiant::getStatus(){return status;}
+void Etudiant::setStatus(string s){status = s;}
+
+
+                            //---| Methode Affiche | -----------------------------------------
+
+void Etudiant::AfficherEtudiant() {
+        cout << "|------------------------------------------------------|" << endl;
+        cout << "|----------|         ETUDIANT           |--------------|" << endl;
+        cout << "|------------------------------------------------------|" << endl;
+        cout << "| - Mat     : "<< Mat<<endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Nom     : "<< Nom<<endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Prenom  : "<< Prenom<<endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Niveau  : "<< Niveau<<endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Filiere : "<< Filiere<<endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Site    : "<< Site<<endl;
+        cout << "|                                                      |" << endl;
+        cout << "|------------|     INSCRIPRION AU COURS      |---------|" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Cours   : " << coursinscrits << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| - Status  : " << status <<  endl;
+        cout << "|------------------------------------------------------|" << endl;
+
 }
+
+void Etudiant::ModifierEtudiant(string F, string S){
+        Filiere = F;
+        Site = S;
+}
+
+
+void Etudiant::afficheinscription(){
+        cout << endl;
+        cout << "|---------------------------------------|" << endl;
+        cout << "|------- | INSCRIPRION AU COURS |-------|" << endl;
+        cout << "|---------------------------------------|" << endl;
+        cout << "| - Nom    : "<< Nom<<endl;
+        cout << "|                                       |" << endl;
+        cout << "| - Cours  : " << coursinscrits << endl;
+        cout << "|                                       |" << endl;
+        cout << "| - Status : " << endl;
+        cout << "|                                       |" << endl;
+        cout << "|---------------------------------------|" << endl;
+        cout << endl;
+}
+
+
+
 //##########################################################################################################################################
-
-
-
-
-
-
 //########################################## Class Gestion Etudiant ##############################################
+GestionEtudiant::GestionEtudiant(){}; 
 
-void Gestion_etudiant::ajouterEtudiant(const etudiant& e) {
-    listeEtudiants.push_back(e);
+vector<Etudiant>& GestionEtudiant::getEtudiants(){
+        return Etudiants;
+}
+void GestionEtudiant::CreationEtudiant(Etudiant& E){
+        Etudiants.push_back(E);
+
 }
 
-void Gestion_etudiant::supprimerEtudiant(const string& matricule,const string& name) {
-    for (auto i = listeEtudiants.begin(); i != listeEtudiants.end(); i++) {
-        if (i->getMatricule() == matricule && i->getName() == name) {
-            listeEtudiants.erase(i);
-            cout << "Étudiant -> | " << name <<" | Dont le Matricule -> | " <<matricule << " | est supprimé avec succès !" << endl;                
-            return;
+void  GestionEtudiant::AfficherDetailsEtudiant(){
+        for(auto& E : Etudiants){
+                E.AfficherEtudiant();
         }
-    }
-     cout << "avec le matricule " << matricule << " non trouvé." << endl;
-}
-
-void Gestion_etudiant::afficherTousLesEtudiants() const {
-    for (const auto& etudiant : listeEtudiants) {
-        etudiant.affichEtudiant();
-     }
-}
-
-
-void Gestion_etudiant::rechercherEtudiantParNom(const string& name,const string& filliere ,const string& matricule) {
-    bool exist = false;
-    for (const auto& etudiant : listeEtudiants) {
-        if ((etudiant.getName() == name && etudiant.getFilliere() == filliere) || (etudiant.getMatricule() == matricule)){
-                //etudiant.affichEtudiant();
-                cout << "[ Resultat de Recharche D'etudiant ]" << endl;
-                cout << "Nom : " << etudiant.getName() << " | " << "Prenom : " << etudiant.getPrenom()  << " | Matricule : " << etudiant.getMatricule() << " | " << "Fillierre : " << etudiant.getFilliere() << endl;
-               
-                exist = true;
+} 
+void GestionEtudiant::ModifierEtudiant(){
+        cout << "Entrer le matricule : ";
+        string mat;
+        cin >> mat;
+        for(auto i = Etudiants.begin(); i != Etudiants.end(); ++i){
+                if(i->getMat() == mat){
+                string F,S;
+                cout << "Entrer New Filliere : ";
+                cin >> F;
+                cout << "Entrer New Site : ";
+                cin >> S;
+                i->setFiliere(F);
+                i->setSite(S);
         }
-    }
-        if (!exist) {
-            cout << "!!!!! [ Etudiant Inexitant ] !!!!!"<< endl;
-            cout << "-------------------------------------" << endl;
-            cout << "* Etudiant : " << name << endl;
-            cout << "* Matricule : " << matricule  << endl;
-            cout << "* Filliere : " << filliere <<  endl;
-            cout << "-------------------------------------" << endl;
+        }   
+}
+void GestionEtudiant::SupprimerEtudiant(string mat){
+        bool Etudianttrouver = false;
+        for(auto i = Etudiants.begin(); i != Etudiants.end(); ++i){
+                if(i->getMat() == mat){
+                        Etudianttrouver = true;
+                        Etudiants.erase(i);
+                        
+                        cout << "Etudiant avec le matricule " << mat << " supprimÃ©." << endl;
+                        break;
+                }
+        }if (!Etudianttrouver){
+                cout << "Matricule Introuvable" << endl;
+        }
+
+}
+
+
+void GestionEtudiant::RechercheEtudiant(string m){
+        bool etudianttrouver = false;
+        for(auto& E : Etudiants){
+        if(E.getMat() == m){
+                E.AfficherEtudiant();
+                etudianttrouver = true;
+        }
+        }
+        if(!etudianttrouver){
+        cout << "Etudiant n'existe pas" << endl;
         }
 }
+
+
+Etudiant* GestionEtudiant::rechercherEtudiantParNom(string matricule) {
+        for (auto& etudiant : Etudiants) {
+                if (etudiant.getMat() == matricule) {
+                        return &etudiant; 
+                }
+        }
+        return nullptr;
+}
+
 //##########################################################################################################################################
-
-
-
-
-
-
 
 //############################################### Class Personnel ##############################################
+Personnel::Personnel(string mate,string nom,string prenom,string dep):MatE(mate),Nom(nom),Prenom(prenom),Dep(dep){}
 
-Personnel::Personnel(string n, int num, string dep) 
-: nom(n), numero(num), departement(dep) {}
+        string Personnel::getMatE(){
+                return MatE;
+                }
+        string Personnel::getNom(){
+                return Nom;
+                }    
+        string Personnel :: getPrenom(){
+                return Prenom;
+                } 
+        string Personnel::getDep(){
+                return Dep;
+                }
+        void Personnel::setDep(string d){
+                Dep = d;
+        }
 
-void Personnel::afficherDetailPerso() const {
-    cout << "**** | Personnel Universitaire | ****" << endl;
-    cout << "* Nom : " << nom << endl;
-    cout << "* Numéro : " << numero << endl;
-    cout << "* Département : " << departement << endl;
-    cout << "*****************" << endl;
-}
+                          //---| Methode Affiche | -----------------------------------------
 
-string Personnel::getNom() const { return nom; }
-              
-int Personnel::getNumero() const { return numero; }
-                    
-string Personnel::getDepartement() const {  return departement;}
-              
-void Personnel::modifierPerso(string n, int num, string dep) {
-    nom = n;
-    numero = num;
-    departement = dep;
+
+void Personnel::AfficherPersonnel() {
+        cout << "| - Matricule  : "<< MatE<<endl;
+        cout << "| - Nom        : "<< Nom<<endl;
+        cout << "| - Prenom     : "<< Prenom<<endl;
+        cout << "| - Dep        : "<< Dep<<endl;
+        
+
+
 }
 //##########################################################################################################################################
-
-
-
-
 
 //############################################### Class Enseignant ##############################################
+Enseignant::Enseignant(string mate,string nom,string prenom,string dep,string mat):Matiere(mat),Personnel(mate,nom,prenom,dep){}
 
-Enseignant::Enseignant(string n, int num, string dep, string spec) 
-: Personnel(n, num, dep), specialite(spec) {}
 
-void Enseignant::afficher() const {
-    Personnel::afficherDetailPerso();
-    cout << "* Spécialité : " << specialite << endl;
-    cout << "*****************" << endl;
+                            //---| Methode Getters | -----------------------------------------
+string Enseignant::getMatiere(){
+return Matiere;
+}
+void  Enseignant::setMatiere(string m){
+        Matiere = m;
 }
 
-string Enseignant::getSpecialite() const { 
-    return specialite;
-}
+                            //---| Methode Affiche | -----------------------------------------
 
-void Enseignant::modifierEns(string n, int num, string dep, string spec) {
-    Personnel::modifierPerso(n, num, dep);
-    specialite = spec;
+void Enseignant::AfficherEnseignant() {
+        cout << "|-------------------------------|" << endl;
+        cout << "|           Enseignant          |" << endl;
+        cout << "|-------------------------------|" << endl;
+        Personnel::AfficherPersonnel();
+        cout << "| - Matiere    : "<<Matiere<<endl;
+        cout << "|-------------------------------|" << endl;
 }
 
 //##########################################################################################################################################
-
-
-
-
-
 
 //############################################### Class Administratif ##############################################
 
-Administratif::Administratif(string n, int num, string dep, string post) : Personnel(n, num, dep), poste(post) {}
+Administratif::Administratif(string mate, string nom, string prenom,  string dep, string poste):Poste(poste),Personnel(mate,nom,prenom,dep){}
 
-void Administratif::afficherAdmin() const {
-    Personnel::afficherDetailPerso();
-    cout << "* Poste : " << poste << endl;
-    cout << "*****************" << endl;
+                            //---| Methode Getters | -----------------------------------------
+
+
+string Administratif::getPoste(){
+return Poste;
+
 }
 
-string Administratif::getPoste() const { 
-    return poste;         
+void Administratif::setPoste(string p){
+        Poste = p;
 }
 
-void Administratif::modifierAdmin(string n, int num, string dep, string post) {
-    Personnel::modifierPerso(n, num, dep);
-    poste = post;
+                            //---| Methode Affiche | -----------------------------------------
+
+void Administratif::AfficherAdministratif() {
+        cout << "|-------------------------------|" << endl;
+        cout << "|          Administratif        |" << endl;
+        cout << "|-------------------------------|" << endl;
+        Personnel::AfficherPersonnel(); 
+        cout << "| - Poste : "<< Poste <<endl;
+        cout << "|-------------------------------|" << endl;
+
+
 }
+//########################################## Class  Gestion Personnel ##############################################
+GestionPersonnel::GestionPersonnel(){};
+
+
+
+vector<Enseignant>& GestionPersonnel::getListEnsignant(){return ListEnsignant;}
+
+
+void GestionPersonnel::CreationEnseignant(Enseignant& E){
+        ListEnsignant.push_back(E);
+
+}
+void GestionPersonnel::CreationAdministratif(Administratif& a){
+        ListAdministratif.push_back(a);
+}
+void GestionPersonnel::SupprimerEnseignant(string m){
+        bool EnsExiste = false;
+        for(auto E = ListEnsignant.begin() ; E != ListEnsignant.end(); ++E){
+        if(E->getMatE() == m){
+        EnsExiste = true;
+        ListEnsignant.erase(E);
+        break;
+        }
+        }
+        if(!EnsExiste){
+        cout << "L'enseignant n'existe pas" << endl;
+}
+}
+void GestionPersonnel::SupprimerAdministratif(string m){
+        bool AdmExiste = false;
+        for(auto A = ListAdministratif.begin() ; A != ListAdministratif.end(); ++A){
+        if(A->getMatE() == m){
+        AdmExiste = true;
+        ListAdministratif.erase(A);
+        break;
+        }
+}
+        if(!AdmExiste){
+        cout << "L'enseignant n'existe pas" << endl;
+}
+}
+
+void GestionPersonnel::AfficherTousLesEnseignant(){
+for(auto enseignant : ListEnsignant){
+        enseignant.AfficherEnseignant();
+}
+}
+void GestionPersonnel::AfficherTousLesAdmin(){
+for(auto administratif : ListAdministratif){
+        administratif.AfficherAdministratif();
+}
+}
+void GestionPersonnel::RechercheEnseignant(string mate){
+        bool existe = false;
+        for(auto& E : ListEnsignant){
+        if(E.getMatE() == mate){
+                E.AfficherEnseignant();
+                existe = true;
+        }
+        }
+        if(!existe){
+                cout << "Enseignant n'existe pas" << endl;
+        }
+}  
+
+
+void GestionPersonnel::RechercheAdministratif(string mate){
+        bool existe = false;
+
+        for(auto& A : ListAdministratif){
+        if(A.getMatE() == mate){
+                A.AfficherAdministratif();
+                existe = true;
+        }
+        }
+        if(!existe){
+        cout << "Administratif n'existe pas" << endl;
+        }
+}  
+
+void GestionPersonnel::ModifierEnseigant(){
+        string matricule;
+        cout << "Entrer le Matricule ";
+        cin >> matricule;
+        bool existe = false;
+        for(auto e = ListEnsignant.begin(); e != ListEnsignant.end(); ++e){
+                if(e->getMatE() == matricule){
+                        existe = true;
+                        string d,m;
+                        cout << "Entrer Le Nouveau Departement : ";
+                        cin >> d;
+                        cout << "Entrer la Nouvelle Matiere :  ";
+                        cin >> m;
+                        e->setDep(d);
+                        e->setMatiere(m);
+                        
+                }
+        }if(!existe){
+                cout << "Enseigant Introuvable " << endl;
+        }
+}
+void GestionPersonnel::ModifierAdmin(){
+        string mat;
+        cout << "Entrer le Matricule ";
+        cin >> mat;
+        bool existe = false;
+        for(auto e = ListAdministratif.begin(); e != ListAdministratif.end(); ++e){
+                if(e->getMatE() == mat){
+                        existe = true;
+                        string d,p;
+                        cout << "Entrer Le Nouveau Departement : ";
+                        cin >> d;
+                        cout << "Entrer Le Nouveau Poste :  ";
+                        cin >> p;
+                        e->setDep(d);
+                        e->setPoste(p);
+                }
+        }if(!existe){
+                cout << "Administratif Introuvable " << endl;
+        }
+}
+
+
+
 //##########################################################################################################################################
-
-
-
-
-
-//########################################## Class Gestion Personnel ##############################################
-
-void Gestion_personnel::ajouterPersonnel(const Personnel& p) {
-    listePersonnel.push_back(p);
-}
-
-void Gestion_personnel::afficherTousLesPersonnel() const {
-    for (const auto& personnel : listePersonnel) {
-        personnel.afficherDetailPerso();
-   }
-}
-
-void Gestion_personnel::ajouterEnseigant(const Enseignant& e){
-    listePersonnel.push_back(e);
-}
-
-
-void Gestion_personnel::ajouterAdministratif(const Administratif& a){
-     listePersonnel.push_back(a);
-}
- //##########################################################################################################################################
-
-
-
-
-
-
 
 //########################################## Class Cours ##############################################
+Cours::Cours(int i, string nom, string f, string n) : 
+IdCours(i), NomCours(nom), FiliereCours(f), NiveauCours(n) {}
 
-cours::cours(string n, int code, string dep,string niveau, Enseignant* enseignant) {
-    nom_cours = n;
-    code_cours = code;
-    departement = dep;
-    niveau_etude = niveau;
-    Enseignant_associe = enseignant;
+
+void Cours::AfficherCours(){
+        cout << "|-------------------------------|" << endl;
+        cout << "|             COURS             |" << endl;
+        cout << "|-------------------------------|" << endl;
+        cout << "| - Id cours : "<< IdCours <<endl;
+        cout << "| - Nom du Cours : " << NomCours << endl;
+        cout << "| - Fillier : " << FiliereCours << endl;
+        cout << "| - Niveau D'etude : " << NiveauCours << endl;
 }
-string cours::getNom_cours(){return nom_cours;}
-int cours::getCode_cours(){return code_cours;}
-void cours::setNom_cours(string s){nom_cours = s;}
-string cours::getDepartement(){ return departement;}
-void cours::setDepartement(string d){departement = d;}
-string cours::getNiveau_etude(){return niveau_etude;}
-void cours::setNiveau_etude(string niv){niveau_etude = niv;}
-void cours::affichecours() const{
-    cout << "************* Cours Universitaite *************" << endl;
-    cout << "Nom du cours: " << nom_cours << endl;
-    cout << "Code du cours: " << code_cours << endl;
-    cout << "Département: " << departement << endl;
-    cout << "Niveau D'etude : " << niveau_etude << endl;
-    if (Enseignant_associe != nullptr) {
-        cout << "Enseignant associé: " << Enseignant_associe->getNom() << endl;
-    } else {
-        cout << "Aucun enseignant associé." << endl;
-    }
-}
+
+int Cours::getIdCours()   {return IdCours; }
+string Cours::getNomCours()   {return NomCours;}
+string Cours::getFilierCours(){return FiliereCours;}
+string Cours::getNiveauCours(){return NiveauCours;}
+void Cours::setNiveauCours(string n){NiveauCours = n;}
+
+
+        string Cours::getHeure(){return heure;}
+        string Cours::getJour(){return jour;}
+        void Cours::setHeure(string h){
+                heure = h;
+        }
+        void Cours::setJour(string j){
+                jour = j;
+        }
+
+//Enseignant& Cours::getEnseignantCours(){return EnseignantCours;}
+//##########################################################################################################################################
+
+
 
 //##########################################################################################################################################
 
@@ -240,50 +420,454 @@ void cours::affichecours() const{
 
 
 
-//########################################## Class Gestion cours ##############################################
-void gestion_cours::ajouter_cours(const cours& c){
-    liste_cours.push_back(c);
+//#######################################################   Class Gestion cours ####################################################################################
+
+void Gestion_Cours::CreationCours(Cours& c){
+        ListeDesCours.push_back(c);
 }
-void gestion_cours::supprimerCours(const int code_cours) {
-    for (auto i = liste_cours.begin(); i != liste_cours.end(); i++) {
-        if (i->getCode_cours() == code_cours) {
-            liste_cours.erase(i);
-            cout << "Cours Dont le code  -> | " <<code_cours << " | est supprimé avec succès !" << endl;                
-            return;
+Enseignant* Gestion_Cours::getEnseignantCours(){
+        return EnseignantCours;
+}
+vector<Cours>& Gestion_Cours::getListeDesCours(){
+        return ListeDesCours;
+}
+
+
+void Gestion_Cours::SupprimerCours(int i){
+        bool existe = false;
+        for(auto c = ListeDesCours.begin(); c != ListeDesCours.end(); ++c){
+                if(c->getIdCours() == i){
+                        ListeDesCours.erase(c);
+                        existe = true;
+                        break;
+                }
         }
-    }
-     cout << " le code " << code_cours << " non trouvé." << endl;
-}
-
-void gestion_cours::afficherTousCours() const {
-    for (const auto& cours : liste_cours) {
-        cours.affichecours();
-     }
-}
-
-
-void gestion_cours::modifierCours(const int code_cours, const string& nouveau_nom,const string& nouveau_departement,const string& niv_etude) {
-    for (auto& cours : liste_cours) {
-        if (cours.getCode_cours() == code_cours) {
-            cours.setNom_cours(nouveau_nom);
-            cours.setDepartement(nouveau_departement);
-            cours.setNiveau_etude(niv_etude);
-            break;
+        if(!existe){
+                cout << "-> Cours Introuvable <-" << endl;
+        
         }
-    }
 }
 
-void gestion_cours::consulter_cours(const string& departement, const string& niveau) {
-    bool exist = false;
-    for ( auto& cours : liste_cours) {
-        if (cours.getDepartement() == departement || cours.getNiveau_etude() == niveau) {
-            cout << "[ Résultat de la Recherche du Cours ]" << endl;
-            cours.affichecours(); 
-            exist = true;
+Cours* Gestion_Cours::rechercherCoursParNom(string nom) {
+        for (auto& cours : ListeDesCours) {
+        if (cours.getNomCours() == nom) {
+                return &cours;
         }
-    }
-    if (!exist) {
-        cout << "!!!!! [ Cours Inexistant ] !!!!!" << endl;
-    }
+        }
+        return nullptr;
 }
-//##########################################################################################################################################
+
+
+void Gestion_Cours::ConsulterCours(string d,string n){
+        bool cours = false;
+        for(auto c : ListeDesCours){
+                if(c.getFilierCours() == d && c.getNiveauCours() == n){
+                        cout << "---------------------------------------------" << endl;
+                        c.AfficherCours();
+                        cout << "-> Enseignant : " << EnseignantCours->getNom() << endl; 
+                        cout << "---------------------------------------------" << endl;
+                        cours = true;
+                }
+        }
+        if(!cours){
+                cout << "-> Cours Introuvable <-" << endl;
+        }
+}
+
+
+void Gestion_Cours::attribuerenseignant(int id,Enseignant* ens){
+        for(auto c : ListeDesCours){
+                if(c.getIdCours() == id){
+                        EnseignantCours = ens;
+                        //cout << "Enseignant attribué au cours avec succès." << endl;
+                }
+        } 
+}
+
+void Gestion_Cours::ModifierCours(string cours){
+        bool existe = false;
+        for(auto& c : ListeDesCours){
+                if(c.getNomCours() == cours){
+                        existe = true; 
+                        string niv;
+                        cout << "Entrer Le Nouveau niveau de ce Cours : ";
+                        cin >> niv;
+                        c.setNiveauCours(niv);
+                }
+        }if(!existe){
+                cout << "-> Cours Introuvable <-" << endl;
+        }
+}
+
+void Gestion_Cours::affichertouslescours(){
+        cout << "----------------------------------------------------------------" << endl;
+        for(auto& c : ListeDesCours){
+                cout << "       Nom Du cours : " << c.getNomCours() << endl;
+                cout << "       Niveau Du cours : " << c.getNiveauCours() << endl;
+                cout << "----------------------------------------------------------------" << endl;
+        }
+}
+
+
+
+//  |-> | for pointeur
+//##################################################################################################################
+
+//****************************************************************************************************************
+//************************************| Class Note |*****************************************************
+Note::Note(Etudiant& etudiant,Cours& nomcours,double N):Nometudiant(etudiant),Nomcours(nomcours),note(N){}
+
+
+Etudiant& Note::getNometudiant(){return Nometudiant;}
+Cours& Note::getNomcours(){return Nomcours;}
+double Note::getNote(){return note;}
+void Note::setNote(double n){
+        note = n;
+}
+void Note::afficheNote(){
+        cout << "----------------------------------------------------------------" << endl;
+        cout << "       Nom d'etudiant : " << Nometudiant.getNom() << endl;
+        cout << "       Nom Du cours : " << Nomcours.getNomCours() << endl;
+        cout << "       Note : " << note << endl;
+        cout << "----------------------------------------------------------------" << endl;
+}
+
+
+//****************************************************************************************************************
+//************************************| Class Gestion Note |*****************************************************
+
+Gestion_Notes::Gestion_Notes(){};
+void Gestion_Notes::CreationNote(Note& n) {
+        ListNote.push_back(n);
+}
+
+void Gestion_Notes::ModifierNote(double NouvelleNote){
+        for(auto& n : ListNote){
+                        n.setNote(NouvelleNote);
+                }
+        }
+
+
+void Gestion_Notes::ConsulterlesNote(){
+        for(auto& n : ListNote){
+                n.afficheNote();
+        }
+}
+//****************************************************************************************************************
+//************************************| Class Absence|*****************************************************
+Absence::Absence(Etudiant* e, Cours* c, string d,string h) : etudiant(e), cours(c), Date(d), Heure(h) {
+        motif = "Non Justifier";
+}
+// Absence::~Absence() {
+//         delete etudiant;
+//         delete cours;
+// }
+Etudiant* Absence::getEtudiant()  { return etudiant; }
+Cours* Absence::getCours()  { return cours; }
+string Absence::getDate()  { return Date; }
+string Absence::getMotif(){return motif;}
+void Absence::setMotif(string m){motif = m;}
+string Absence::getHeure(){
+        return Heure;
+}
+void Absence::afficherAbsence() {
+        cout << "---------------------- Abscence ----------------------" << endl;
+        cout << "- Nom de l'étudiant " << etudiant->getNom() ;
+        cout << "- Cours " << cours->getNomCours() ;
+        cout << "- Date " << Date << endl;
+        cout << "- Heure : " << Heure << endl;
+        cout << "- Motif : " << motif << endl;
+        cout << "-------------------------------------------------------" << endl;
+}
+
+
+//****************************************************************************************************************
+
+
+
+//************************************| Class gestion Absence|*****************************************************
+GestionAbsence::GestionAbsence(){};
+void GestionAbsence::creerAbsence(Etudiant* etudiant, Cours* cours,string date,string heure) {
+        Listabsences.push_back(Absence(etudiant, cours, date,heure));
+}
+
+void GestionAbsence::Abscenceetudiant(){
+        for(auto& c : Listabsences){
+                c.afficherAbsence();
+        }
+}
+
+void GestionAbsence::modifierStatutAbsenceParMatricule(string matricule, string newStatus,string date) {
+        for (auto& absence : Listabsences) {
+                if (absence.getEtudiant()->getMat() == matricule && absence.getDate() == date) {
+                        if(newStatus == "Oui"){
+                                absence.setMotif("Justifie");
+                        }else if(newStatus == "Non") {
+                                absence.setMotif("Non justifie");
+                        }else{
+                                cout << "Le statut de l'absence n'est pas valide." << endl;
+                        }
+                        return;
+                }
+        }
+        cout << "Aucune absence correspondante au matricule n'a été trouvée." << endl;
+}
+//****************************************************************************************************************
+
+//************************************| Class EMPLOI DU TEMPS|*****************************************************
+
+EmploiDuTemps:: EmploiDuTemps(Gestion_Cours& c,GestionPersonnel& ens): cours(c),enseignant(ens){
+        jour = "";
+        horaire = "";
+};
+string EmploiDuTemps::getJour(){return jour;}
+string EmploiDuTemps::getHoraire(){return horaire;}
+void   EmploiDuTemps::setJour(string nouveauJour){ jour = nouveauJour; }
+void   EmploiDuTemps::setHoraire(string nouvelHoraire){horaire = nouvelHoraire;}
+void   EmploiDuTemps::afficherEmploiDuTemps(){
+        cout << "|-------------------------------------------------------------------------------------------|" << endl;
+        cout << "|                                   EMPLOI DU TEMPS                                         |" << endl;
+        cout << "|-------------------------------------------------------------------------------------------|" << endl;
+        cout << "|     COURS                    |          JOUR              |            HEURE              |" << endl;
+        for(auto c : cours.getListeDesCours()){
+        cout << "|-------------------------------------------------------------------------------------------|" << endl;
+        // Utilisation de setw() pour fixer la largeur de chaque colonne
+        cout << "| " << setw(28) << left << c.getNomCours() << " | " << setw(27) << left << c.getJour() << " | " << setw(30) << left << c.getHeure() << " |" << endl;
+        }
+        cout << "|-------------------------------------------------------------------------------------------|" << endl;
+}
+
+
+
+
+void EmploiDuTemps::remplirEmploi(){
+        string mat;
+        cout << "Entrer Votre matricule : ";
+        cin >> mat;
+
+        for(auto& e : enseignant.getListEnsignant()){
+                if(e.getMatE() == mat){
+                        for(auto& c : cours.getListeDesCours()){
+                                if(e.getMatiere() == c.getNomCours()){
+                                        cout << "| - " << c.getNomCours() << endl;
+                                        cout << "Entrer le jour : ";
+                                        string jour,h;
+                                        cin >> jour;    
+                                        cout << "Entrer l'horaire : ";
+                                        cin >> h;
+                                        c.setJour(jour);
+                                        c.setHeure(h);
+                                }
+                        }
+                }
+        }
+}
+
+void EmploiDuTemps::modifierEmploi() {
+        string nomCours;
+        cout << "Entrer le Nom du cours à modifier : ";
+        cin >> nomCours;
+        bool emploiModifie = false; // Pour suivre si l'emploi du temps a été modifié
+        for (auto& c :cours.getListeDesCours()) {
+                if (c.getNomCours() == nomCours) {
+                        string nouveauJour, nouvelHoraire;
+                        cout << "| - " << nomCours << endl;
+                        cout << "| - Entrer le nouveau jour : ";
+                        cin >> nouveauJour;
+                        cout << "| - Entrer le nouvel horaire : ";
+                        cin >> nouvelHoraire;
+                        c.setJour(nouveauJour); // Mettre à jour le jour du cours
+                        c.setHeure(nouvelHoraire); // Mettre à jour l'horaire du cours
+                        cout << "Emploi du temps modifié pour le cours " << nomCours << endl;
+                        cout << "Nouveau jour : " << c.getJour() << endl;
+                        cout << "Nouvel horaire : " << c.getHeure() << endl;
+                        emploiModifie = true;
+                        break;
+                }
+        }
+        if (!emploiModifie) {
+                cout << "Aucun cours trouvé avec le nom spécifié." << endl;
+        }
+}
+//****************************************************************************************************************
+
+
+
+
+void MENU_PRINCIPALE() {
+        cout << endl;
+        cout << endl;
+        cout << "|=======================================================================|" << endl;
+        cout << "|             Bienvenue dans le système de gestion scolaire             |" << endl;
+        cout << "|                 de l'École Marocaine des Sciences de                  |" << endl;
+        cout << "|                         l'Ingénieur (EMSI)                            |" << endl;
+        cout << "|=======================================================================|" << endl;
+        cout << "|                            MENU PRINCIPAL                             |" << endl;
+        cout << "|=======================================================================|" << endl;
+        cout << "| |1| - Gestion des étudiants                                           |" << endl;
+        cout << "|                                                                       |" << endl;
+        cout << "| |2| - Gestion des enseignants                                         |" << endl;
+        cout << "|                                                                       |" << endl;
+        cout << "| |3| - Gestion du personnel administratif                              |" << endl;
+        cout << "|                                                                       |" << endl;
+        cout << "| |4| - Gestion des cours                                               |" << endl;
+        cout << "|                                                                       |" << endl;
+        cout << "| |5| - Gestion des notes et absences                                   |" << endl;
+        cout << "|                                                                       |" << endl;
+        cout << "| |6| - Inscription au cours                                            |" << endl;
+        cout << "|                                                                       |" << endl;
+        cout << "| |7| - Quitter                                                         |" << endl;
+        cout << "|=======================================================================|" << endl;
+        cout << "|-> | Entrer Votre Choix | : " ;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void MENU_GESTION_ETUDIANT(){
+        cout << endl;
+        cout << endl;
+        cout << "|=================================================================|" << endl;
+        cout << "|                      MENU GESTION DES ETUDIANTS                 |" << endl;
+        cout << "|=================================================================|" << endl;
+        cout << "| |1| - Ajouter un nouvel étudiant                                |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |2| - Modifier les informations d'un étudiant existant          |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |3| - Supprimer un étudiant                                     |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |4| - Rechercher un étudiant                                    |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |5| - Afficher tous les étudiants                               |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |6| - Retour au menu principal                                  |" << endl;
+        cout << "|=================================================================|" << endl;
+        cout << "|-> | Entrer Votre Choix | : " ;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void MENU_GESTION_DES_ENSEIGNANTS(){
+        cout << endl;
+        cout << endl;
+        cout << "|=================================================================|" << endl;
+        cout << "|                  MENU GESTION DES ENSEIGNANTS                   |" << endl;
+        cout << "|=================================================================|" << endl;
+        cout << "| |1| - Ajouter un nouvel enseignant                              |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |2| - Modifier les informations d'un enseignant existant        |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |3| - Supprimer un enseignant                                   |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |4| - Rechercher un enseignant                                  |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |5| - Afficher tous les enseignant                              |" << endl;
+        cout << "|                                                                 |" << endl;
+        cout << "| |6| - Retour au menu principal                                  |" << endl;
+        cout << "|=================================================================|" << endl;
+        cout << "|-> | Entrer Votre Choix | : " ;       
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void MENU_GESTION_DU_PERSONNEL_ADMINISTRATIF(){
+        cout << endl;
+        cout << endl;
+        cout << "|==================================================================================|" << endl;
+        cout << "|               MENU GESTION DU PERSONNEL ADMINISTRATIF                            |" << endl;
+        cout << "|==================================================================================|" << endl;
+        cout << "| |1| - Ajouter un nouveau membre du personnel administratif                       |" << endl;
+        cout << "|                                                                                  |" << endl;
+        cout << "| |2| - Modifier les informations d'un membre du personnel administratif existant  |" << endl;
+        cout << "|                                                                                  |" << endl;
+        cout << "| |3| - Supprimer un membre du personnel administratif                             |" << endl;
+        cout << "|                                                                                  |" << endl;
+        cout << "| |4| - Rechercher un membre du personnel administratif                            |" << endl;
+        cout << "|                                                                                  |" << endl;
+        cout << "| |5| - Afficher tous les membres du personnel administratif                       |" << endl;
+        cout << "|                                                                                  |" << endl;
+        cout << "| |6| - Retour au menu principal                                                   |" << endl;
+        cout << "|==================================================================================|" << endl;
+        cout << "|-> | Entrer Votre Choix | : " ;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void MENU_GESTION_DES_COURS(){
+        cout << endl;
+        cout << endl;
+        cout << "|======================================================|" << endl;
+        cout << "|               MENU GESTION GESTION DES COURS         |" << endl;
+        cout << "|======================================================|" << endl;
+        cout << "| |1| - Ajouter un nouveau cours                       |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |2| - Modifier les informations d'un cours existant  |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |3| - Supprimer un cours                             |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |4| - Rechercher un cours                            |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |5| - Consulter Un Cours                             |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |6| - Retour au menu principal                       |" << endl;
+        cout << "|======================================================|" << endl;
+        cout << "|-> | Entrer Votre Choix | : " ;
+        }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void MENU_GESTION_DES_NOTES(){
+        cout << endl;
+        cout << endl;
+        cout << "|======================================================|" << endl;
+        cout << "|            MENU Gestion des notes et absences        |" << endl;
+        cout << "|======================================================|" << endl;
+        cout << "| |1| - Consulter Les Notes                            |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |2| - Modifier une Note                              |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |3| - Ajouter une absence                            |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |4| - Afficher Les AbsenseS                          |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |5| - Motif d'absence                                |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |6| - Retour au menu principal                       |" << endl;
+        cout << "|======================================================|" << endl;
+        cout << "|-> | Entrer Votre Choix | : " ;
+
+}
+
+
+
+void INSCRIPTION(){
+        cout << endl;
+        cout << endl;
+        cout << "|======================================================|" << endl;
+        cout << "|            INSCRIPTION / EMPLOI DU TEMPS             |" << endl;
+        cout << "|======================================================|" << endl;
+        cout << "| |1| - Inscription Au Cours [->  ETUDIANT  <-]        |" << endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |2|- Valider L'inscription [-> ENSEIGNANT <-]        |"<< endl;
+        cout << "|                                                      |" << endl;                        
+        cout << "| |3|- Emploi du Temps                                 |"<< endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |4|- Plannifier L'emploi                             |"<< endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |5|- Modifier Emploi                                 |"<< endl;
+        cout << "|                                                      |" << endl;
+        cout << "| |6|- Retour au menu principal.                       |"<< endl;;
+        cout << "|                                                      |" << endl;
+        cout << "|======================================================|" << endl;
+        cout << "Entrer votre choix : ";
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
